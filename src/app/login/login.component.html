@@ -1,0 +1,28 @@
+<div style="height: 100%" class="p-d-flex p-jc-center p-ai-center">
+  <div class="p-d-flex p-flex-column">
+    <div class="p-d-flex p-jc-center">
+
+      <div class="p-mr-2">
+        <mat-form-field>
+          <mat-label>Login</mat-label>
+          <input (change)="changeLogin($event)" matInput value="" />
+        </mat-form-field>
+      </div>
+
+      <div class="p-mr-2">
+        <mat-form-field>
+          <mat-label>Password</mat-label>
+          <input type="password" (change)="changePassword($event)" matInput value="" />
+        </mat-form-field>
+      </div>
+
+    </div>
+    <div class="p-d-flex p-jc-center">
+      <div class="p-mr-0">
+        <button (click)="loginClicked()" mat-fab color="primary" aria-label="Example icon button with a bookmark icon">
+          <mat-icon>login</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
