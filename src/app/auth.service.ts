@@ -20,6 +20,7 @@ export class AuthService {
       }, undefined);
   }
   getPermissions(data: AuthModel, key: string): string[] {
-    return data.permissions[key];
+    // TODO Operator ??
+    return data.permissions[key] ? data.permissions[key] : [];
   }
 }

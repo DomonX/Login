@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
 import { of } from 'rxjs';
@@ -7,6 +7,7 @@ import { catchError, tap } from 'rxjs/operators';
 
 import { AuthenticateAction } from '../actions/authenticate.action';
 import { AuthModel, AuthService } from './../../../auth.service';
+import { LogoutAction } from './../actions/logout.action';
 
 export interface AuthStateModel {
   login: string;
@@ -28,7 +29,7 @@ export interface AuthStateModel {
 @Injectable()
 export class AuthState {
 
-  constructor(private http: HttpClient, private authService: AuthService, private router: Router) {}
+  constructor(private http: HttpClient, private authService: AuthService, private router: Router, private ngZone: NgZone) {}
 
   @Selector()
   static loginData(state: AuthStateModel): AuthStateModel {
@@ -48,12 +49,28 @@ export class AuthState {
           password: action.password,
           permissions: this.authService.getPermissions(authData, key)
         });
-        this.router.navigate(['dashboard']);
+        this.ngZone.run(() => {
+          this.router.navigate(['dashboard']);
+        });
       }),
       catchError(error => {
         window.alert(JSON.stringify(error))
         return of(undefined);
       }),
     )
+  }
+
+  @Action(LogoutAction)
+  logout(ctx: StateContext<AuthStateModel>, action: LogoutAction) {
+    ctx.patchState({
+      authKey: undefined,
+      login: undefined,
+      password: undefined,
+      permissions: []
+    });
+    this.ngZone.run(() => {
+      this.router.navigate(['']);
+    });
+    return of(true);
   }
 }
